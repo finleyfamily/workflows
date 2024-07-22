@@ -6,11 +6,8 @@ on:
     branches:
       - master
 
-env:
-  NODE_VERSION: '20'
-
 jobs:
   spellcheck:
     uses: ./.github/workflows/spellcheck.yml
     with:
-      node-version: ${{ env.NODE_VERSION }}
+      node-version: '20'
