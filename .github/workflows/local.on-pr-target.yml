@@ -8,4 +8,4 @@ on:
 
 jobs:
   assign-author-to-pr:
-    uses: ./workflows/.github/workflows/pr.assign-author.yml
+    uses: ./.github/workflows/pr.assign-author.yml

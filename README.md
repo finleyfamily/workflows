@@ -76,8 +76,8 @@ jobs:
 
 ### Inputs
 
-| Input | Description | Required |
-| ===== | ============ | ======= |
-| `node-version` | Version of node to use (e.g. `20`) | False |
+| Input          | Description                        | Required |
+| -------------- | ---------------------------------- | -------- |
+| `node-version` | Version of node to use (e.g. `20`) | False    |
 
 [cspell]: https://github.com/streetsidesoftware/cspell
