@@ -1,0 +1,12 @@
+name: Assign Author To PR
+
+on:
+  workflow_call:
+
+jobs:
+  assign-author-to-pr:
+    name: Assign Author to PR
+    if: ${{ !endswith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/assign-author@v1  # cspell:ignore technote
