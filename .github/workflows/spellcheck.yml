@@ -1,4 +1,4 @@
-name: Spellcheck
+name: spellcheck
 
 on:
   workflow_call:
@@ -7,14 +7,59 @@ on:
         required: false
         type: string
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   spellcheck:
-    name: Spellcheck
+    name: spellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      - run: make setup-npm
-      - run: make spellcheck
+      - name: ⤵️ Install Node Dependencies
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ setup-npm ]]; then
+            echo "installing node dependencies using Makefile...";
+            make setup-npm;
+          elif [[ -f "package-lock.json" ]]; then
+            echo "installing node dependencies using pipeline";
+            npm ci;
+          else
+            red="\e[31m";
+            end_color="\e[0m";
+            echo "${red}lockfile missing - can't install dependencies${end_color}";
+            exit 9;
+          fi
+      - name: 🚀 Run spellcheck
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ spellcheck ]]; then
+            echo "running spellcheck using Makefile...";
+            make spellcheck;
+          else
+            npm exec --no -- cspell . \
+              --color \
+              --dot \
+              --exclude "**/.cache/**" \
+              --exclude "**/.git/**" \
+              --exclude "**/.venv/**" \
+              --exclude "**/node_modules/**" \
+              --gitignore \
+              --must-find-files \
+              --no-progress \
+              --relative \
+              --show-context
+          fi

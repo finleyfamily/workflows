@@ -7,10 +7,14 @@
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
 - [Assign Author To PR](#assign-author-to-pr)
+- [Python (build)](#python-build)
+  - [Inputs](#inputs)
+- [Python (checks)](#python-checks)
+  - [Inputs](#inputs-1)
 - [Release Drafter](#release-drafter)
 - [Spellcheck](#spellcheck)
   - [Prerequisites](#prerequisites)
-  - [Inputs](#inputs)
+  - [Inputs](#inputs-2)
 
 <!-- mdformat-toc end -->
 
@@ -29,6 +33,59 @@ jobs:
   assign-author-to-pr:
     uses: finleyfamily/workflows/.github/workflows/pr.assign-author.yml@master
 ```
+
+## Python (build)
+
+Build python package and upload distributable as an artifact of the job.
+
+```yaml
+on:
+  pull_request:  # any pull request
+  push:
+    branches:
+      - master
+
+jobs:
+  python-build:
+    uses: finleyfamily/workflows/.github/workflows/python.build.yml@master
+```
+
+### Inputs
+
+| Input            | Description                                                                               | Required |
+| ---------------- | ----------------------------------------------------------------------------------------- | -------- |
+| `poetry-plugins` | A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`). | False    |
+
+## Python (checks)
+
+Lint and test python code.
+
+```yaml
+on:
+  pull_request:  # any pull request
+  push:
+    branches:
+      - master
+
+jobs:
+  python-checks:
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12]
+    uses: finleyfamily/workflows/.github/workflows/python.checks.yml@master
+    with:
+      node-version: '20'
+      python-version: ${{ matrix.python-version }}
+```
+
+### Inputs
+
+| Input            | Description                                                                                                                         | Required |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `disable-tests`  | Disable tests.                                                                                                                      | False    |
+| `node-version`   | Version of node to use (e.g. `20`).                                                                                                 | False    |
+| `poetry-plugins` | A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`).                                           | False    |
+| `python-version` | Version range or exact version of a Python version to use, using semver version range syntax. Reads from `pyproject.toml` if unset. | False    |
 
 ## Release Drafter
 
@@ -59,14 +116,11 @@ on:
     branches:
       - master
 
-env:
-  NODE_VERSION: '20'
-
 jobs:
   spellcheck:
     uses: finleyfamily/workflows/.github/workflows/spellcheck.yml@master
     with:
-      node-version: ${{ env.NODE_VERSION }}
+      node-version: '20'
 ```
 
 ### Prerequisites
@@ -76,8 +130,8 @@ jobs:
 
 ### Inputs
 
-| Input          | Description                        | Required |
-| -------------- | ---------------------------------- | -------- |
-| `node-version` | Version of node to use (e.g. `20`) | False    |
+| Input          | Description                         | Required |
+| -------------- | ----------------------------------- | -------- |
+| `node-version` | Version of node to use (e.g. `20`). | False    |
 
 [cspell]: https://github.com/streetsidesoftware/cspell

@@ -1,0 +1,101 @@
+name: Python (checks)
+
+on:
+  pull_request:  # any pull request
+  push:
+    branches:
+      - master
+  workflow_call:
+    inputs:
+      disable-tests:
+        required: false
+        type: boolean
+      node-version:
+        required: false
+        type: string
+      poetry-plugins:
+        required: false
+        type: string
+      python-version:
+        required: false
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: 🏗 Setup Python
+        uses: ITProKyle/action-setup-python@v1.0.0
+        with:
+          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
+          python-version: ${{ inputs.python-version }}
+      - name: ⤵️ Install Node Dependencies
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ setup-npm ]]; then
+            echo "installing node dependencies using Makefile...";
+            make setup-npm;
+          elif [[ -f "package-lock.json" ]]; then
+            echo "installing node dependencies using pipeline";
+            npm ci;
+          else
+            red="\e[31m";
+            end_color="\e[0m";
+            echo "${red}lockfile missing - can't install dependencies${end_color}";
+            exit 9;
+          fi
+      - name: 🚀 Run Linters
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ lint ]]; then
+            echo "running lint using Makefile...";
+            make lint;
+          else
+            echo "running linters using pipeline...";
+            echo "to customize what is run, include a 'Makefile' with a 'lint' target";
+            poetry run black . --check --color --diff
+            poetry run ruff check . --select ALL
+            npx --yes pyright --venv-path ./;
+          fi
+  test:
+    name: Test
+    if: inputs.disable-tests != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🏗 Setup Python
+        uses: ITProKyle/action-setup-python@v1.0.0
+        with:
+          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
+          python-version: ${{ inputs.python-version }}
+      - name: 🚀 Run Tests
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ test ]]; then
+            echo "running tests using Makefile...";
+            make test;
+          else
+            echo "no tests configured";
+            echo "to customize what is run, include a 'Makefile' with a 'test' target";
+          fi
