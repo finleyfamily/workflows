@@ -1,0 +1,46 @@
+name: Python (build)
+
+on:
+  workflow_call:
+    inputs:
+      poetry-plugins:
+        required: false
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build 📦
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub (complete)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 🏗 Setup Python
+        uses: ITProKyle/action-setup-python@v1.0.0
+        with:
+          poetry-install: false
+          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
+      - name: 👷 Build
+        run: |
+          if [[ -f "Makefile" ]]; then
+            MAKEFILE_LIST="$(make -rpn | sed -n -e '/^$/ { n ; /^[^ .#][^ ]*:/ { s/:.*$// ; p ; } ; }')"
+          fi
+
+          if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ build ]]; then
+            echo "running build using Makefile...";
+            make build;
+          else
+            echo "running build using pipeline...";
+            echo "to customize what is run, include a 'Makefile' with a 'build' target";
+            poetry build;
+          fi
+      - name: ⤴️ Upload distribution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pypi-dist
+          path: dist
