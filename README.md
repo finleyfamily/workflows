@@ -7,6 +7,7 @@
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
 - [Assign Author To PR](#assign-author-to-pr)
+- [Enforce Branch Name](#enforce-branch-name)
 - [Python (build)](#python-build)
   - [Inputs](#inputs)
 - [Python (checks)](#python-checks)
@@ -34,13 +35,26 @@ jobs:
     uses: finleyfamily/workflows/.github/workflows/pr.assign-author.yml@master
 ```
 
+## Enforce Branch Name
+
+Enforce a branch naming convention.
+
+```yaml
+on:
+  pull_request_target:
+
+jobs:
+  enforce-branch-name:
+    uses: finleyfamily/workflows/.github/workflows/pr.enforce-branch-name.yml@master
+```
+
 ## Python (build)
 
 Build python package and upload distributable as an artifact of the job.
 
 ```yaml
 on:
-  pull_request:  # any pull request
+  pull_request:
   push:
     branches:
       - master
@@ -62,7 +76,7 @@ Lint and test python code.
 
 ```yaml
 on:
-  pull_request:  # any pull request
+  pull_request:
   push:
     branches:
       - master
