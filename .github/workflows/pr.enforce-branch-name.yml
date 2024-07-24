@@ -1,3 +1,5 @@
+name: Enforce Branch Name
+
 on:
   create:
   pull_request_target:
