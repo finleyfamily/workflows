@@ -6,8 +6,7 @@
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
-- [Assign Author To PR](#assign-author-to-pr)
-- [Enforce Branch Name](#enforce-branch-name)
+- [pull_request_target](#pull_request_target)
 - [Python (build)](#python-build)
   - [Inputs](#inputs)
 - [Python (checks)](#python-checks)
@@ -19,33 +18,20 @@
 
 <!-- mdformat-toc end -->
 
-## Assign Author To PR
+## pull_request_target
 
-Assigns the author of a pull request to the pull request.
-
-```yaml
-on:
-  pull_request_target:
-    types:
-      - opened
-      - reopened
-
-jobs:
-  assign-author-to-pr:
-    uses: finleyfamily/workflows/.github/workflows/pr.assign-author.yml@master
-```
-
-## Enforce Branch Name
-
-Enforce a branch naming convention.
+- Assigns the author of a pull request to the pull request.
+- Enforce a branch naming convention.
 
 ```yaml
+name: pull_request_target
+
 on:
   pull_request_target:
 
 jobs:
-  enforce-branch-name:
-    uses: finleyfamily/workflows/.github/workflows/pr.enforce-branch-name.yml@master
+  workflows:
+    uses: finleyfamily/workflows/.github/workflows/pull_request_target.yml@master
 ```
 
 ## Python (build)
