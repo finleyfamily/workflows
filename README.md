@@ -32,6 +32,9 @@ on:
 
 jobs:
   workflows:
+    permissions:
+      contents: write
+      pull-requests: write
     uses: finleyfamily/workflows/.github/workflows/pull_request_target.yml@master
 ```
 
