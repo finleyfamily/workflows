@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "@itprokyle/cspell-dict": "^1.2.4",
-    "cspell": "^8.13.1"
+    "@itprokyle/cspell-dict": "^1.2.5",
+    "cspell": "^8.13.2"
   },
   "name": "workflows",
   "version": "0.0.0"
