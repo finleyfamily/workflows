@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - name: 🏗 Setup Python
-        uses: ITProKyle/action-setup-python@v1.0.0
+        uses: finleyfamily/action-setup-python@v1.0.0
         with:
           poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
           python-version: ${{ inputs.python-version }}
@@ -82,7 +82,7 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
       - name: 🏗 Setup Python
-        uses: ITProKyle/action-setup-python@v1.0.0
+        uses: finleyfamily/action-setup-python@v1.0.0
         with:
           poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
           python-version: ${{ inputs.python-version }}
