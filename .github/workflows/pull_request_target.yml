@@ -21,3 +21,17 @@ jobs:
           allowed_prefixes: >-
             bugfix,chore,dependabot,docs,feat,feature,fix,hotfix,
             maint,maintain,maintenance,release,renovate,snyk
+  label-pr:
+    name: ✏️ Label PR
+    if: ${{ github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize' }}
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Run Release Drafter
+        uses: release-drafter/release-drafter@v6
+        with:
+          disable-releaser: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

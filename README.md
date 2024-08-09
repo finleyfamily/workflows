@@ -22,6 +22,7 @@
 
 - Assigns the author of a pull request to the pull request.
 - Enforce a branch naming convention.
+- Apply labels to PR.
 
 ```yaml
 name: pull_request_target
