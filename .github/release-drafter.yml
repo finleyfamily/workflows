@@ -5,7 +5,7 @@ autolabeler:
   - label: changelog:skip
     branch: [/^(dependabot)\/.*/, /^pre-commit-ci-update-config/, /^renovate\/.*lockfile/]
   - label: dependencies
-    branch: [/^(depend|dependabot|renovate)\/.*/, /^pre-commit-ci-update-config/]
+    branch: [/^(deps|dependabot|renovate)\/.*/, /^pre-commit-ci-update-config/]
   - label: documentation
     branch: [/^(docs)\/.*/]
   - label: feature
