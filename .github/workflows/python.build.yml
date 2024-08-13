@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       poetry-plugins:
-        default: poetry-dynamic-versioning
+        default: poetry-dynamic-versioning[plugin]
         description: A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`).
         required: false
         type: string
@@ -26,7 +26,7 @@ jobs:
         uses: finleyfamily/action-setup-python@v1.0.0
         with:
           poetry-install: false
-          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
+          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning[plugin]' }}
       - name: 👷 Build
         run: |
           if [[ -f "Makefile" ]]; then

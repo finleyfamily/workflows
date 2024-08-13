@@ -18,7 +18,7 @@ on:
         required: false
         type: string
       poetry-plugins:
-        default: poetry-dynamic-versioning
+        default: poetry-dynamic-versioning[plugin]
         description: A whitespace seperated list of poetry plugins to be installed.
         required: false
         type: string
