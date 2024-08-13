@@ -34,6 +34,7 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v4
         with:
+          cache: npm
           node-version: ${{ inputs.node-version }}
       - name: 🏗 Setup Python
         uses: finleyfamily/action-setup-python@v1.0.0
