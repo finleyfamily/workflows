@@ -1,9 +1,14 @@
 name: spellcheck
 
 on:
+  push:
+    branches:
+      - master
   workflow_call:
     inputs:
       node-version:
+        default: '20'
+        description: Version of node to use.
         required: false
         type: string
 
