@@ -8,15 +8,24 @@ on:
   workflow_call:
     inputs:
       disable-tests:
+        default: false
+        description: Whether to disable running `pytest`.
         required: false
         type: boolean
       node-version:
+        default: '20'
+        description: Version of node to use.
         required: false
         type: string
       poetry-plugins:
+        default: poetry-dynamic-versioning
+        description: A whitespace seperated list of poetry plugins to be installed.
         required: false
         type: string
       python-version:
+        description: |
+          Version range or exact version of a Python version to use, using semver version range syntax.
+          Read from `pyproject.toml` if unset.
         required: false
         type: string
 
@@ -28,6 +37,8 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: '1'
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -39,7 +50,7 @@ jobs:
       - name: 🏗 Setup Python
         uses: finleyfamily/action-setup-python@v1.0.0
         with:
-          poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
+          poetry-plugins: ${{ inputs.poetry-plugins }}
           python-version: ${{ inputs.python-version }}
       - name: ⤵️ Install Node Dependencies
         run: |

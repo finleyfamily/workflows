@@ -4,6 +4,8 @@ on:
   workflow_call:
     inputs:
       poetry-plugins:
+        default: poetry-dynamic-versioning
+        description: A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`).
         required: false
         type: string
 

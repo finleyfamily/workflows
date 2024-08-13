@@ -59,9 +59,7 @@ jobs:
 
 ### Inputs
 
-| Input            | Description                                                                               | Required |
-| ---------------- | ----------------------------------------------------------------------------------------- | -------- |
-| `poetry-plugins` | A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`). | False    |
+For a list of inputs with default values, descriptions, and types, see [`python.build.yml`](./.github/workflows/python.build.yml)
 
 ## Python (checks)
 
@@ -87,12 +85,7 @@ jobs:
 
 ### Inputs
 
-| Input            | Description                                                                                                                         | Required |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `disable-tests`  | Disable tests.                                                                                                                      | False    |
-| `node-version`   | Version of node to use (e.g. `20`).                                                                                                 | False    |
-| `poetry-plugins` | A whitespace seperated list of poetry plugins to be installed (e.g. `plugin0` `plugin1`).                                           | False    |
-| `python-version` | Version range or exact version of a Python version to use, using semver version range syntax. Reads from `pyproject.toml` if unset. | False    |
+For a list of inputs with default values, descriptions, and types, see [`python.checks.yml`](./.github/workflows/python.checks.yml)
 
 ## Release Drafter
 
@@ -137,8 +130,6 @@ jobs:
 
 ### Inputs
 
-| Input          | Description                         | Required |
-| -------------- | ----------------------------------- | -------- |
-| `node-version` | Version of node to use (e.g. `20`). | False    |
+For a list of inputs with default values, descriptions, and types, see [`spellcheck.yml`](./.github/workflows/spellcheck.yml)
 
 [cspell]: https://github.com/streetsidesoftware/cspell
