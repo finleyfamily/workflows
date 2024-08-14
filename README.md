@@ -9,6 +9,9 @@
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
+- [Home Assistant Repository](#home-assistant-repository)
+  - [CI](#ci)
+  - [Repository Updater](#repository-updater)
 - [pull_request_target](#pull_request_target)
 - [Python (build)](#python-build)
   - [Inputs](#inputs)
@@ -20,6 +23,58 @@
   - [Inputs](#inputs-2)
 
 <!-- mdformat-toc end -->
+
+## Home Assistant Repository
+
+Workflows for Home Assistant repositories.
+
+### CI
+
+```yaml
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  workflows:
+    uses: finleyfamily/workflows/.github/workflows/hass-repository.ci.yml@master
+```
+
+### Repository Updater
+
+Triggered from individual add-on repos to update to main add-on repository.
+
+```yaml
+name: Repository Updater
+
+# yamllint disable-line rule:truthy
+on:
+  repository_dispatch:
+    types: ["update"]
+
+jobs:
+  auth:
+    name: Create app token
+    runs-on: ubuntu-latest
+    outputs:
+      token: ${{ steps.app-token.outputs.token }}
+    steps:
+      - name: 🏗 Create app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.FINLEY_APP_ID }}
+          private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
+  workflows:
+    needs: auth
+    uses: finleyfamily/workflows/.github/workflows/hass-repository.updater.yml@master
+    secrets:
+      UPDATER_TOKEN: ${{ needs.auth.outputs.token }}
+```
 
 ## pull_request_target
 
