@@ -2,6 +2,7 @@
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![renovate](https://img.shields.io/badge/enabled-brightgreen?logo=renovatebot&logoColor=%2373afae&label=renovate)](https://developer.mend.io/github/finlyfamily/workflows)
+[![license][license-shield]](./LICENSE)
 
 🤖 GitHub Action Workflows.
 
@@ -9,8 +10,11 @@
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
-- [Home Assistant Repository](#home-assistant-repository)
+- [Home Assistant Add-on](#home-assistant-add-on)
   - [CI](#ci)
+  - [Deploy](#deploy)
+- [Home Assistant Repository](#home-assistant-repository)
+  - [CI](#ci-1)
   - [Repository Updater](#repository-updater)
 - [pull_request_target](#pull_request_target)
 - [Python (build)](#python-build)
@@ -24,9 +28,72 @@
 
 <!-- mdformat-toc end -->
 
+## Home Assistant Add-on
+
+Workflows for Home Assistant add-ons.
+
+Inspired by [hassio-addons/workflows](https://github.com/hassio-addons/workflows).
+
+### CI
+
+```yaml
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  workflows:
+    uses: finleyfamily/workflows/.github/workflows/hass-addon.ci.yml@master
+```
+
+### Deploy
+
+Deploy add-on to repositories.
+
+```yaml
+name: Deploy
+
+on:
+  release:
+    types:
+      - published
+  workflow_run:
+    workflows:
+      - CI
+    branches:
+      - master
+    types:
+      - completed
+
+jobs:
+  auth:
+    name: Create app token
+    runs-on: ubuntu-latest
+    outputs:
+      token: ${{ steps.app-token.outputs.token }}
+    steps:
+      - name: 🏗 Create app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.FINLEY_APP_ID }}
+          private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
+  workflows:
+    uses: finleyfamily/workflows/.github/workflows/hass-addon.deploy.yml@master
+    secrets:
+      DISPATCH_TOKEN: ${{ needs.auth.outputs.token }}
+```
+
 ## Home Assistant Repository
 
 Workflows for Home Assistant repositories.
+
+Inspired by [hassio-addons/workflows](https://github.com/hassio-addons/workflows).
 
 ### CI
 
@@ -188,3 +255,4 @@ jobs:
 For a list of inputs with default values, descriptions, and types, see [`spellcheck.yml`](./.github/workflows/spellcheck.yml)
 
 [cspell]: https://github.com/streetsidesoftware/cspell
+[license-shield]: https://img.shields.io/github/license/finleyfamily/workflows.svg
