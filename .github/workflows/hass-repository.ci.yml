@@ -1,0 +1,8 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  spellcheck:
+    uses: finleyfamily/workflows/.github/workflows/spellcheck.yml@master
