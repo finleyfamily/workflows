@@ -48,6 +48,8 @@ on:
 
 jobs:
   workflows:
+    permissions:
+      pull-requests: read
     uses: finleyfamily/workflows/.github/workflows/hass-addon.ci.yml@master
 ```
 
@@ -84,6 +86,7 @@ jobs:
           app-id: ${{ vars.FINLEY_APP_ID }}
           private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
   workflows:
+    needs: auth
     uses: finleyfamily/workflows/.github/workflows/hass-addon.deploy.yml@master
     secrets:
       DISPATCH_TOKEN: ${{ needs.auth.outputs.token }}

@@ -3,6 +3,11 @@ name: CI
 on:
   workflow_call:
     inputs:
+      force-build:
+        default: false
+        description: Whether to force the `build` job to run.
+        required: false
+        type: boolean
       slug:
         description: Overrides the detected slug.
         required: false
@@ -75,9 +80,28 @@ jobs:
           SHELLCHECK_OPTS: -s bash
   spellcheck:
     uses: finleyfamily/workflows/.github/workflows/spellcheck.yml@master
+  changes:
+    needs: information
+    outputs:
+      add-on: ${{ steps.changes.outputs.add-on }}
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: ℹ️ Determine file changes
+        id: changes
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            add-on:
+              - ${{ needs.information.outputs.target }}/**
   build:
     name: Build ${{ matrix.architecture }}
+    if: needs.changes.outputs.add-on == 'true' || inputs.force-build == 'true'
     needs:
+      - changes
       - information
       - lint-addon
       - lint-hadolint

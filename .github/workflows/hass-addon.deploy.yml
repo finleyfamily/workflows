@@ -6,10 +6,6 @@ concurrency:
 on:
   workflow_call:
     inputs:
-      slug:
-        description: Overrides the detected slug.
-        required: false
-        type: string
       repository:
         default: hass-repository
         description: The name of the stable repository.
@@ -23,6 +19,10 @@ on:
       repository_beta:
         default: hass-repository-beta
         description: The name of the beta repository.
+        required: false
+        type: string
+      slug:
+        description: Overrides the detected slug.
         required: false
         type: string
     secrets:
@@ -82,9 +82,29 @@ jobs:
 
           echo "environment=${environment}" >> "$GITHUB_OUTPUT"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-  deploy:
-    name: 👷 Build & Deploy ${{ matrix.architecture }}
+  changes:
     needs: information
+    outputs:
+      add-on: ${{ steps.changes.outputs.add-on }}
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: ℹ️ Determine file changes
+        id: changes
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            add-on:
+              - ${{ needs.information.outputs.target }}/**
+  deploy:
+    if: github.event_name == 'release' || needs.changes.outputs.add-on == 'true'
+    name: 👷 Build & Deploy ${{ matrix.architecture }}
+    needs:
+      - changes
+      - information
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -176,10 +196,13 @@ jobs:
             "ghcr.io/${{ github.repository_owner }}/${{ needs.information.outputs.slug }}/${{ matrix.architecture }}:${{ needs.information.outputs.version }}"
   publish-edge:
     name: 📢 Publish to edge repository
-    if: needs.information.outputs.environment == 'edge'
+    if: |
+      needs.information.outputs.environment == 'edge' &&
+      (github.event_name == 'release' || needs.changes.outputs.add-on == 'true')
     needs:
-      - information
+      - changes
       - deploy
+      - information
     environment:
       name: ${{ needs.information.outputs.environment }}
     runs-on: ubuntu-latest
@@ -202,10 +225,12 @@ jobs:
   #   name: 📢 Publish to beta repository
   #   if: |
   #     needs.information.outputs.environment == 'beta' ||
-  #     needs.information.outputs.environment == 'stable'
+  #     needs.information.outputs.environment == 'stable' &&
+  #     (github.event_name == 'release' || needs.changes.outputs.add-on == 'true')
   #   needs:
-  #     - information
+  #     - changes
   #     - deploy
+  #     - information
   #   environment:
   #     name: ${{ needs.information.outputs.environment }}
   #   runs-on: ubuntu-latest
@@ -225,10 +250,13 @@ jobs:
   #           }
   publish-stable:
     name: 📢 Publish to stable repository
-    if: needs.information.outputs.environment == 'stable'
+    if: |
+      needs.information.outputs.environment == 'stable' &&
+      (github.event_name == 'release' || needs.changes.outputs.add-on == 'true')
     needs:
-      - information
+      - changes
       - deploy
+      - information
     environment:
       name: ${{ needs.information.outputs.environment }}
     runs-on: ubuntu-latest
