@@ -84,7 +84,9 @@ jobs:
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.FINLEY_APP_ID }}
+          owner: ${{ github.repository_owner }}
           private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
+          repositories: hass-repository,hass-repository-edge
   workflows:
     needs: auth
     uses: finleyfamily/workflows/.github/workflows/hass-addon.deploy.yml@master
