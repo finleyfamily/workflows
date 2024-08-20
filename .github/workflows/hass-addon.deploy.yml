@@ -6,17 +6,22 @@ concurrency:
 on:
   workflow_call:
     inputs:
+      app-id:
+        default: ${{ vars.FINLEY_APP_ID }}
+        description: ID of a GitHub application for which to generate an authentication token.
+        required: false
+        type: string
       repository:
         default: hass-repository
         description: The name of the stable repository.
         required: false
         type: string
-      repository_edge:
+      repository-edge:
         default: hass-repository-edge
         description: The name of the edge repository.
         required: false
         type: string
-      repository_beta:
+      repository-beta:
         default: hass-repository-beta
         description: The name of the beta repository.
         required: false
@@ -26,7 +31,7 @@ on:
         required: false
         type: string
     secrets:
-      DISPATCH_TOKEN:
+      app-private-key:
         required: true
 
 jobs:
@@ -207,11 +212,19 @@ jobs:
       name: ${{ needs.information.outputs.environment }}
     runs-on: ubuntu-latest
     steps:
+      - name: 🔒 Create app token
+        id: auth
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ inputs.app-id }}
+          owner: ${{ github.repository_owner }}
+          private-key: ${{ secrets.app-private-key }}
+          repositories: ${{ inputs.repository-edge }}
       - name: 🚀 Dispatch repository updater update signal
         uses: peter-evans/repository-dispatch@v3.0.0
         with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          repository: ${{ github.repository_owner }}/${{ inputs.repository_edge }}
+          token: ${{ steps.auth.outputs.token }}
+          repository: ${{ github.repository_owner }}/${{ inputs.repository-edge }}
           event-type: update
           client-payload: >
             {
@@ -235,11 +248,19 @@ jobs:
   #     name: ${{ needs.information.outputs.environment }}
   #   runs-on: ubuntu-latest
   #   steps:
+  #     - name: 🔒 Create app token
+  #       id: auth
+  #       uses: actions/create-github-app-token@v1
+  #       with:
+  #         app-id: ${{ inputs.app-id }}
+  #         owner: ${{ github.repository_owner }}
+  #         private-key: ${{ secrets.app-private-key }}
+  #         repositories: ${{ inputs.repository-beta }}
   #     - name: 🚀 Dispatch repository updater update signal
   #       uses: peter-evans/repository-dispatch@v3.0.0
   #       with:
-  #         token: ${{ secrets.DISPATCH_TOKEN }}
-  #         repository: ${{ github.repository_owner }}/${{ inputs.repository_beta }}
+  #         token: ${{ steps.auth.outputs.token }}
+  #         repository: ${{ github.repository_owner }}/${{ inputs.repository-beta }}
   #         event-type: update
   #         client-payload: >
   #           {
@@ -261,10 +282,18 @@ jobs:
       name: ${{ needs.information.outputs.environment }}
     runs-on: ubuntu-latest
     steps:
+      - name: 🔒 Create app token
+        id: auth
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ inputs.app-id }}
+          owner: ${{ github.repository_owner }}
+          private-key: ${{ secrets.app-private-key }}
+          repositories: ${{ inputs.repository }}
       - name: 🚀 Dispatch repository updater update signal
         uses: peter-evans/repository-dispatch@v3.0.0
         with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
+          token: ${{ steps.auth.outputs.token }}
           repository: ${{ github.repository_owner }}/${{ inputs.repository }}
           event-type: update
           client-payload: >

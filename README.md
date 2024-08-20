@@ -73,25 +73,10 @@ on:
       - completed
 
 jobs:
-  auth:
-    name: Create app token
-    runs-on: ubuntu-latest
-    outputs:
-      token: ${{ steps.app-token.outputs.token }}
-    steps:
-      - name: 🏗 Create app token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.FINLEY_APP_ID }}
-          owner: ${{ github.repository_owner }}
-          private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
-          repositories: hass-repository,hass-repository-edge
   workflows:
-    needs: auth
     uses: finleyfamily/workflows/.github/workflows/hass-addon.deploy.yml@master
     secrets:
-      DISPATCH_TOKEN: ${{ needs.auth.outputs.token }}
+      app-private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
 ```
 
 ## Home Assistant Repository
@@ -129,23 +114,10 @@ on:
     types: ["update"]
 
 jobs:
-  auth:
-    name: Create app token
-    runs-on: ubuntu-latest
-    outputs:
-      token: ${{ steps.app-token.outputs.token }}
-    steps:
-      - name: 🏗 Create app token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.FINLEY_APP_ID }}
-          private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
   workflows:
-    needs: auth
     uses: finleyfamily/workflows/.github/workflows/hass-repository.updater.yml@master
     secrets:
-      UPDATER_TOKEN: ${{ needs.auth.outputs.token }}
+      app-private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
 ```
 
 ## pull_request_target
