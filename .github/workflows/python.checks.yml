@@ -36,9 +36,9 @@ defaults:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
     env:
       FORCE_COLOR: '1'
+    runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
@@ -87,8 +87,10 @@ jobs:
             npx --yes pyright --venv-path ./;
           fi
   test:
-    name: Test
     if: inputs.disable-tests != 'true'
+    name: Test
+    env:
+      PYTEST_ADDOPTS: --color=yes
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
