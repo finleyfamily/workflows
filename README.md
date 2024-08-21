@@ -110,6 +110,11 @@ name: Repository Updater
 
 # yamllint disable-line rule:truthy
 on:
+  push:
+    branch:
+      - master
+    paths:
+      - .github/workflows/repository-updater.yml
   repository_dispatch:
     types: ["update"]
 
@@ -117,7 +122,7 @@ jobs:
   workflows:
     uses: finleyfamily/workflows/.github/workflows/hass-repository.updater.yml@master
     secrets:
-      app-private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
+      UPDATER_TOKEN: ${{ secrets.HASS_UPDATER_TOKEN }}
 ```
 
 ## pull_request_target

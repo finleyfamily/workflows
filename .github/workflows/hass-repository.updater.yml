@@ -3,14 +3,8 @@ name: Repository Updater
 # yamllint disable-line rule:truthy
 on:
   workflow_call:
-    inputs:
-      app-id:
-        default: ${{ vars.FINLEY_APP_ID }}
-        description: ID of a GitHub application for which to generate an authentication token.
-        required: false
-        type: string
     secrets:
-      app-private-key:
+      UPDATER_TOKEN:
         required: true
 
 concurrency:
@@ -21,15 +15,9 @@ jobs:
     name: Publish add-on update
     runs-on: ubuntu-latest
     steps:
-      - name: 🔒 Create app token
-        id: auth
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ inputs.app-id }}
-          private-key: ${{ secrets.app-private-key }}
       - name: 🚀 Run Repository Updater
         uses: hassio-addons/repository-updater@v1.3.0
         with:
           addon: ${{ github.event.client_payload.addon }}
           repository: ${{ github.repository }}
-          token: ${{ steps.auth.outputs.token }}
+          token: ${{ secrets.UPDATER_TOKEN }}
