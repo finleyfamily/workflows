@@ -103,6 +103,7 @@ jobs:
         with:
           filters: |
             add-on:
+              - .github/workflows/deploy.yml
               - ${{ needs.information.outputs.target }}/**
   deploy:
     if: github.event_name == 'release' || needs.changes.outputs.add-on == 'true'

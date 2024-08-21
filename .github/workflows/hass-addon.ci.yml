@@ -96,6 +96,7 @@ jobs:
         with:
           filters: |
             add-on:
+              - .github/workflows/ci.yml
               - ${{ needs.information.outputs.target }}/**
   build:
     name: Build ${{ matrix.architecture }}

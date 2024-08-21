@@ -51,6 +51,8 @@ jobs:
     permissions:
       pull-requests: read
     uses: finleyfamily/workflows/.github/workflows/hass-addon.ci.yml@master
+    with:
+      slug: ${{ github.event.repository.name }}
 ```
 
 ### Deploy
@@ -77,6 +79,8 @@ jobs:
     uses: finleyfamily/workflows/.github/workflows/hass-addon.deploy.yml@master
     secrets:
       app-private-key: ${{ secrets.FINLEY_APP_PRIVATE_KEY }}
+    with:
+      slug: ${{ github.event.repository.name }}
 ```
 
 ## Home Assistant Repository
@@ -111,7 +115,7 @@ name: Repository Updater
 # yamllint disable-line rule:truthy
 on:
   push:
-    branch:
+    branches:
       - master
     paths:
       - .github/workflows/repository-updater.yml
