@@ -1,10 +1,6 @@
 name: Python (checks)
 
 on:
-  pull_request:  # any pull request
-  push:
-    branches:
-      - master
   workflow_call:
     inputs:
       disable-tests:
