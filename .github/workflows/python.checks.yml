@@ -109,7 +109,14 @@ jobs:
           if [[ -f "Makefile" ]] && [[ " ${MAKEFILE_LIST[*]} " =~ test ]]; then
             echo "running tests using Makefile...";
             make test;
+            poetry run coverage xml --ignore-errors --rcfile=pyproject.toml
           else
             echo "no tests configured";
             echo "to customize what is run, include a 'Makefile' with a 'test' target";
           fi
+      - name: ⤴️ Upload to Codecov
+        if: hashFiles('.github/codecov.yaml', '.github/codecov.yml') != ''
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
