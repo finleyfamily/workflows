@@ -112,7 +112,7 @@ jobs:
           fi
       - name: ⤴️ Upload to Codecov
         if: hashFiles('.github/codecov.yaml', '.github/codecov.yml') != ''
-        uses: codecov/codecov-action@v5.0.5
+        uses: codecov/codecov-action@v5.0.6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
