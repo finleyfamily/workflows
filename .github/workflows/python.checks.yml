@@ -83,7 +83,7 @@ jobs:
             npx --yes pyright --venv-path ./;
           fi
   test:
-    if: inputs.disable-tests != 'true'
+    if: inputs.disable-tests != 'true' && inputs.disable-tests != true
     name: Test
     env:
       PYTEST_ADDOPTS: --color=yes
