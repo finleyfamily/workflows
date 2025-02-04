@@ -1,0 +1,66 @@
+name: Docker (lint)
+
+on:
+  workflow_call:
+    inputs:
+      disable-shellcheck:
+        default: false
+        description: Whether to disable running `shellcheck`.
+        required: false
+        type: boolean
+      dockerfile:
+        default: Dockerfile
+        description: Path to the Dockerfile.
+        required: false
+        type: string
+      shellcheck-additional-files:
+        description: A space separated list of additional filename to check.
+        required: false
+        type: string
+      shellcheck-ignore-names:
+        default: ""
+        description: "Names to ignore when running ShellCheck."
+        required: false
+        type: string
+      shellcheck-ignore-paths:
+        default: ""
+        description: "Paths to ignore when running ShellCheck."
+        required: false
+        type: string
+      shellcheck-scandir:
+        default: '.'
+        description: Directory to be searched for files. Defaults to `.`.
+        required: false
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  hadolint:
+    name: hadolint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ inputs.dockerfile }}
+  shellcheck:
+    if: inputs.disable-shellcheck != 'true' && inputs.disable-shellcheck != true
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🚀 Run Shellcheck
+        uses: ludeeus/action-shellcheck@2.0.0  # cspell:words ludeeus
+        env:
+          SHELLCHECK_OPTS: -s bash
+        with:
+          additional_files: ${{ inputs.shellcheck-additional-files }}
+          ignore_names: ${{ inputs.shellcheck-ignore-names }}
+          ignore_paths: ${{ inputs.shellcheck-ignore-paths }}
+          scandir: ${{ inputs.shellcheck-scandir }}
