@@ -1,6 +1,6 @@
 # workflows
 
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/finleyfamily/docker-base-debian/master.svg)](https://results.pre-commit.ci/latest/github/finleyfamily/docker-base-debian/master)
 [![renovate](https://img.shields.io/badge/enabled-brightgreen?logo=renovatebot&logoColor=%2373afae&label=renovate)](https://developer.mend.io/github/finlyfamily/workflows)
 [![license][license-shield]](./LICENSE)
 
