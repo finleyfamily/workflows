@@ -55,6 +55,8 @@ jobs:
 # .github/workflows/release.yml
 on:
   release:
+    types:
+      - published
 
 jobs:
   docker:
