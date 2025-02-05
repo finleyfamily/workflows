@@ -10,6 +10,7 @@
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
+- [Docker](#docker)
 - [Home Assistant Add-on](#home-assistant-add-on)
   - [CI](#ci)
   - [Deploy](#deploy)
@@ -27,6 +28,40 @@
   - [Inputs](#inputs-2)
 
 <!-- mdformat-toc end -->
+
+## Docker
+
+Workflows for building Docker images and pushing them to a registry.
+
+```yaml
+# .github/workflows/ci.yml
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - release/**
+
+jobs:
+  docker-lint:
+    uses: finleyfamily/workflows/.github/workflows/docker.lint.yml@master
+  docker-build:
+    needs:
+      - docker-lint
+    uses: finleyfamily/workflows/.github/workflows/docker.build.yml@master
+```
+
+```yml
+# .github/workflows/release.yml
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  docker:
+    uses: finleyfamily/workflows/.github/workflows/docker.build.yml@master
+```
 
 ## Home Assistant Add-on
 

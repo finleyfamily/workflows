@@ -1,0 +1,131 @@
+name: Docker (build & push)
+
+concurrency:
+  group: ${{ github.ref }}
+
+on:
+  workflow_call:
+    inputs:
+      authors:
+        default: Kyle Finley <kyle@finley.sh>
+        description: |
+          List of authors of the image.
+          Will be used as the value of the `org.opencontainers.image.authors` label.
+        required: false
+        type: string
+      dockerfile:
+        default: Dockerfile
+        description: Path to Dockerfile to build.
+        required: false
+        type: string
+      documentation:
+        default: ${{ github.repositoryUrl }}
+        description: |
+          URL to documentation for the image.
+          Will be used as the value of the `org.opencontainers.image.documentation` label.
+        required: false
+        type: string
+      name:
+        default: ${{ github.repository }}
+        description: Name of the image. Exclude registry when providing as it will be appended later.
+        required: false
+        type: string
+      platforms:
+        default: linux/amd64, linux/arm64, linux/arm/v7
+        description: Comma delimited list of target platforms for build.
+        required: false
+        type: string
+      push-image:
+        default: true
+        description: Whether to push the image after it has been built.
+        required: false
+        type: boolean
+      registry:
+        default: ghcr.io
+        description: Server address of Docker registry.
+        required: false
+        type: string
+      registry-username:
+        default: ${{ github.repository_owner }}
+        description: Username used to login to the registry.
+        required: false
+        type: string
+      watch-directory:
+        default: rootfs/**
+        description: |
+          Additional directory glob to watch for changes.
+          Should contain any and all files that will be copied into the image.
+        required: false
+        type: string
+    secrets:
+      registry-password:
+        description: Password used to login to the registry. If not provided, `secrets.GITHUB_TOKEN` is used.
+        required: false
+
+
+jobs:
+  changes:
+    if: github.event_name == 'release' || github.event_name == 'pull_request'
+    outputs:
+      image: ${{ steps.changes.outputs.image }}
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: ℹ️ Determine file changes
+        id: changes
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            image:
+              - .github/workflows/ci.yml
+              - ${{ inputs.dockerfile }}
+              - ${{ inputs.watch-directory }}
+  build-and-push:
+    if: needs.changes.outputs.image == 'true' || github.event_name == 'release'
+    name: 👷 Build & Push
+    needs:
+      - changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4
+      - name: 🏗 Set up QEMU
+        uses: docker/setup-qemu-action@v3.3.0
+      - name: 🏗 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.8.0
+      - name: 🏗  Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ inputs.registry-username }}
+          password: ${{ secrets.registry-password || secrets.GITHUB_TOKEN }}
+      - name: ℹ️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5.6.1
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+        with:
+          annotations: |
+            manifest:org.opencontainers.image.authors=${{ inputs.authors }}
+            index:org.opencontainers.image.authors=${{ inputs.authors }}
+            manifest:org.opencontainers.image.documentation=${{ github.repositoryUrl }}
+            index=org.opencontainers.image.documentation=${{ github.repositoryUrl }}
+          images: ${{ inputs.registry }}/${{ inputs.name }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.event_name == 'release' }}
+            type=ref,event=pr
+            type=semver,pattern={{raw}}
+      - name: 🚀 Build
+        uses: docker/build-push-action@v6.13.0
+        with:
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: .
+          file: ${{ inputs.dockerfile }}
+          platforms: ${{ inputs.platforms }}
+          push: ${{ inputs.push-image }}
+          tags: ${{ steps.meta.outputs.tags }}
