@@ -48,6 +48,12 @@ jobs:
   docker-build:
     needs:
       - docker-lint
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
+      packages: write
+      pull-requests: read
     uses: finleyfamily/workflows/.github/workflows/docker.build.yml@master
 ```
 

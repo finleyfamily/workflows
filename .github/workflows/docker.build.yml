@@ -88,6 +88,11 @@ jobs:
     name: 👷 Build & Push
     needs:
       - changes
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
