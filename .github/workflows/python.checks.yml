@@ -44,7 +44,7 @@ jobs:
           cache: npm
           node-version: ${{ inputs.node-version }}
       - name: 🏗 Setup Python
-        uses: finleyfamily/action-setup-python@v1.1.0
+        uses: finleyfamily/action-setup-python@v1.2.0
         with:
           poetry-plugins: ${{ inputs.poetry-plugins }}
           python-version: ${{ inputs.python-version }}
@@ -96,7 +96,7 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
       - name: 🏗 Setup Python
-        uses: finleyfamily/action-setup-python@v1.1.0
+        uses: finleyfamily/action-setup-python@v1.2.0
         with:
           poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning' }}
           python-version: ${{ inputs.python-version }}

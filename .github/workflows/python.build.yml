@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🏗 Setup Python
-        uses: finleyfamily/action-setup-python@v1.1.0
+        uses: finleyfamily/action-setup-python@v1.2.0
         with:
           poetry-install: false
           poetry-plugins: ${{ inputs.poetry-plugins || 'poetry-dynamic-versioning[plugin]' }}
