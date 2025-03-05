@@ -14,20 +14,20 @@ help: ## show this message
 lint: ## run all linters
 	@echo "no linters configured for this project"
 
-run-pre-commit: ## run pre-commit for all files
+run.pre-commit: ## run pre-commit for all files
 	@poetry run pre-commit run $(PRE_COMMIT_OPTS) \
 		--all-files \
 		--color always
 
-setup: setup-poetry setup-pre-commit setup-npm ## setup development environment
+setup: setup.poetry setup.pre-commit setup.npm ## setup development environment
 
-setup-npm: ## install node dependencies with npm
+setup.npm: ## install node dependencies with npm
 	@npm ci
 
-setup-poetry: ## setup python virtual environment
+setup.poetry: ## setup python virtual environment
 	@poetry sync $(POETRY_OPTS)
 
-setup-pre-commit: ## install pre-commit git hooks
+setup.pre-commit: ## install pre-commit git hooks
 	@poetry run pre-commit install
 
 spellcheck: ## run cspell
