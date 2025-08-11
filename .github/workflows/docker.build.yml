@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: ℹ️ Determine file changes
         id: changes
         uses: dorny/paths-filter@v3.0.2
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: 🏗 Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
       - name: 🏗 Set up Docker Buildx
