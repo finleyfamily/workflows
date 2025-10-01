@@ -222,7 +222,7 @@ jobs:
           private-key: ${{ secrets.app-private-key }}
           repositories: ${{ inputs.repository-edge }}
       - name: 🚀 Dispatch repository updater update signal
-        uses: peter-evans/repository-dispatch@v3.0.0
+        uses: peter-evans/repository-dispatch@v4.0.0
         with:
           token: ${{ steps.auth.outputs.token }}
           repository: ${{ github.repository_owner }}/${{ inputs.repository-edge }}
@@ -292,7 +292,7 @@ jobs:
           private-key: ${{ secrets.app-private-key }}
           repositories: ${{ inputs.repository }}
       - name: 🚀 Dispatch repository updater update signal
-        uses: peter-evans/repository-dispatch@v3.0.0
+        uses: peter-evans/repository-dispatch@v4.0.0
         with:
           token: ${{ steps.auth.outputs.token }}
           repository: ${{ github.repository_owner }}/${{ inputs.repository }}
