@@ -12,7 +12,7 @@ jobs:
       has-release-drafter-config: ${{ steps.inspect-files.outputs.has-release-drafter-config }}
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           sparse-checkout: .github
       - name: ℹ️ Inspect files
