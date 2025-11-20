@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: 🚀 Run Hadolint
         uses: hadolint/hadolint-action@v3.3.0
         with:
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: 🚀 Run Shellcheck
         uses: ludeeus/action-shellcheck@2.0.0  # cspell:words ludeeus
         env:
