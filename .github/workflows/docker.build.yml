@@ -124,7 +124,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{raw}}
       - name: 🚀 Build
-        uses: docker/build-push-action@v6.19.1
+        uses: docker/build-push-action@v6.19.2
         with:
           annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha
