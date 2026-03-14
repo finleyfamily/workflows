@@ -215,7 +215,7 @@ jobs:
     steps:
       - name: 🔒 Create app token
         id: auth
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ inputs.app-id }}
           owner: ${{ github.repository_owner }}
@@ -285,7 +285,7 @@ jobs:
     steps:
       - name: 🔒 Create app token
         id: auth
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ inputs.app-id }}
           owner: ${{ github.repository_owner }}
