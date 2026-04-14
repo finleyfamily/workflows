@@ -228,7 +228,7 @@ jobs:
         python-version: [3.11, 3.12]
     uses: finleyfamily/workflows/.github/workflows/python.checks.yml@master
     with:
-      node-version: '20'
+      node-version: '22'
       python-version: ${{ matrix.python-version }}
 ```
 
@@ -269,7 +269,7 @@ jobs:
   spellcheck:
     uses: finleyfamily/workflows/.github/workflows/spellcheck.yml@master
     with:
-      node-version: '20'
+      node-version: '22'
 ```
 
 ### Prerequisites

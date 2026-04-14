@@ -8,7 +8,7 @@ on:
   workflow_call:
     inputs:
       node-version:
-        default: '20'
+        default: '22'
         description: Version of node to use.
         required: false
         type: string
