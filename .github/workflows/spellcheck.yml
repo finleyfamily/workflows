@@ -17,19 +17,21 @@ defaults:
   run:
     shell: bash
 
+env:
+  FORCE_COLOR: '1'
+  NODE_VERSION: '22'
+
 jobs:
   spellcheck:
     name: spellcheck
     runs-on: ubuntu-latest
-    env:
-      FORCE_COLOR: '1'
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v6
       - name: 🏗 Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ inputs.node-version || env.NODE_VERSION }}
       - name: ⤵️ Install Node Dependencies
         run: |
           MAKEFILE_LIST=();
